@@ -1,5 +1,6 @@
 import copy
 import sys
+from visma.numerical.secantmethod import SecantMethod
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QTabWidget, QVBoxLayout
 from visma.calculus.differentiation import differentiate
 from visma.calculus.integration import integrate
@@ -47,10 +48,13 @@ class PlotWindow(QWidget):
 
 def commandExec(command):
     operation = command.split('(', 1)[0]
-    inputEquation = command.split('(', 1)[1][:-1]
-    matrix = False      # True when matrices operations are present in the code.
+
+
     if operation[0:4] == 'mat_':
         matrix = True
+    inputEquation = command.split('(', 1)[1][:-1]
+    matrix = False      # True when matrices operations are present in the code.
+
 
     if not matrix:
         """
@@ -82,18 +86,19 @@ def commandExec(command):
         comments = []
         if simul:
             tokens = [tokenizer(eqStr1), tokenizer(eqStr2), tokenizer(eqStr3)]
-        else:
-            tokens = tokenizer(inputEquation)
-            if '=' in inputEquation:
-                lhs, rhs = getLHSandRHS(tokens)
-                lTokens = lhs
-                rTokens = rhs
-                _, solutionType = checkTypes(lhs, rhs)
-            else:
-                solutionType = 'expression'
-                lhs, rhs = getLHSandRHS(tokens)
-                lTokens = lhs
-                rTokens = rhs
+        else :
+            if operation != "num-find-roots":
+                tokens = tokenizer(inputEquation)
+                if '=' in inputEquation:
+                    lhs, rhs = getLHSandRHS(tokens)
+                    lTokens = lhs
+                    rTokens = rhs
+                    _, solutionType = checkTypes(lhs, rhs)
+                else:
+                    solutionType = 'expression'
+                    lhs, rhs = getLHSandRHS(tokens)
+                    lTokens = lhs
+                    rTokens = rhs
 
         if operation == 'plot':
             app = QApplication(sys.argv)
@@ -154,8 +159,22 @@ def commandExec(command):
         elif operation == 'differentiate':
             lhs, rhs = getLHSandRHS(tokens)
             lTokens, _, _, equationTokens, comments = differentiate(lTokens, varName)
-        if operation != 'plot':
-            # FIXME: when either plotting window or GUI window is opened from CLI and after it is closed entire CLI exits, it would be better if it is avoided
+
+        elif operation == 'num-find-roots':
+            answer = 0
+            command2 = command
+            parameters = command2.replace('num-find-roots', "")
+            parameters=parameters.replace("^","**")
+            parameters = parameters.replace('(', "")
+            parameters = parameters.replace(')', "")
+            parameters = parameters.split(',')
+            if len(parameters) == 4:
+                answer = SecantMethod(parameters[0], float(parameters[1]), float(parameters[2]), int(parameters[3]))
+            else:
+                answer = SecantMethod(parameters[0], float(parameters[1]), float(parameters[2]))
+            print("The Root=", answer)
+
+        if operation != 'plot' and operation !='num-find-roots':
             final_string = resultStringCLI(equationTokens, operation, comments, solutionType, simul)
             print(final_string)
     else:
