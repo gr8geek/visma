@@ -8,13 +8,13 @@ About: This module is created to handle the GUI of the project, this module inte
 import sys
 import os
 import copy
+from os import system, name
 
 from PyQt5.QtGui import QPainter
 from PyQt5.QtWidgets import QApplication, QWidget, QTabWidget, QGridLayout, QVBoxLayout, QHBoxLayout, QTextEdit, QSplitter, QFrame, QAbstractButton, QDialog, QMessageBox, QFileDialog
 from PyQt5.QtCore import Qt, QUrl
 from PyQt5 import QtGui, QtWidgets
 from PyQt5.QtWebEngineWidgets import QWebEngineView
-
 from visma.calculus.differentiation import differentiate
 from visma.calculus.integration import integrate
 from visma.discreteMaths.combinatorics import factorial, combination, permutation
@@ -183,7 +183,6 @@ class WorkSpace(QWidget):
         inputSpace.tab2.setLayout(preferenceLayout(self))
         inputSpace.tab1.setStatusTip("Input characters")
         inputSpace.setFixedHeight(200)
-
         buttonSpace = QWidget()
         buttonSpace.setLayout(self.buttonsLayout())
         buttonSpace.setFixedWidth(300)
@@ -294,7 +293,7 @@ class WorkSpace(QWidget):
                 myQListWidgetItem, myQCustomQWidget)
         self.myQListWidget.resize(400, 300)
         self.equationListVbox.addWidget(self.myQListWidget)
-        self.myQListWidget.itemClicked.connect(self.Clicked)
+        #self.myQListWidget.itemClicked.connect(self.Clicked)
         self.clearButton = QtWidgets.QPushButton('Clear equations')
         self.clearButton.clicked.connect(self.clearHistory)
         self.clearButton.setStatusTip("Clear history")
@@ -962,7 +961,6 @@ class PicButton(QAbstractButton):
     def sizeHint(self):
         return self.pixmap.size()
 
-
 def initGUI():
     logger.setLogName('window-gui')
     logger.info('Starting VisMa GUI...')
@@ -974,7 +972,8 @@ def initGUI():
         app.exec_()
         if name == 'nt':
             _ = system('cls')
-        else:
+
             _ = system('clear')
-    finally:
-        logger.info('Existing VisMa GUI...')
+    finally:        
+         logger.info('Existing VisMa GUI...')
+
