@@ -36,7 +36,6 @@ from visma.solvers.simulEqn import simulSolver
 from visma.transform.factorization import factorize
 from visma.gui import logger
 
-
 class Window(QtWidgets.QMainWindow):
 
     def __init__(self):
@@ -971,6 +970,9 @@ def initGUI():
         ex = Window()
         ex.initUI()
         logger.setLogName('main')
-        sys.exit(app.exec_())
+        app.exec_()
+        sys.exit(restart())
     finally:
         logger.info('Existing VisMa...')
+def restart():
+    os.system("python3 main.py 1 1")
