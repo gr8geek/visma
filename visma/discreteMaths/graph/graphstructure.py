@@ -1,6 +1,6 @@
 class CreateAdjency:
     '''
-    An optimized version of adjency List and adjenc Matrix
+    An optimized version of adjacency List and adjacency Matrix
     They are the most common structures for graph
     instead of making use of linked list we have combined dictionary with list
     As it works of values of all types
