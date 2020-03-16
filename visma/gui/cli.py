@@ -4,6 +4,9 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QTabWidget, QVBo
 from visma.calculus.differentiation import differentiate
 from visma.calculus.integration import integrate
 from visma.discreteMaths.combinatorics import factorial, combination, permutation
+from visma.discreteMaths.graph.graphinput import *
+from visma.discreteMaths.graph.displaynetwork import *
+from visma.discreteMaths.graph.graphmain import *
 from visma.io.checks import checkTypes
 from visma.io.tokenize import tokenizer, getLHSandRHS
 from visma.io.parser import resultStringCLI, resultMatrixString
@@ -17,7 +20,6 @@ from visma.transform.factorization import factorize
 from visma.matrix.structure import Matrix, SquareMat
 from visma.matrix.operations import simplifyMatrix, addMatrix, subMatrix, multiplyMatrix
 from visma.gui.plotter import plotFigure2D, plotFigure3D, plot
-
 
 class App(QMainWindow):
     def __init__(self, tokens):
@@ -45,13 +47,28 @@ class PlotWindow(QWidget):
         plot(self, tokens)
 
 
-def commandExec(command):
+def commandExec(command,graph):
     operation = command.split('(', 1)[0]
+
+
     inputEquation = command.split('(', 1)[1][:-1]
     matrix = False      # True when matrices operations are present in the code.
     if operation[0:4] == 'mat_':
         matrix = True
+    if operation == 'addgraph':
+        temp = command
+        temp = temp.replace('addgraph', "")
+        temp = temp.replace(')', "")
+        temp = temp.replace('(', "")
+        acceptGraph(graph, temp, 1)
 
+    if operation == 'displaygraph':
+        print("Inside")
+        temp = command
+        temp = temp.replace("displaygraph", "")
+        temp = temp.replace(")", "")
+        temp = temp.replace("(", "")
+        displayGraph(graph, temp)
     if not matrix:
         """
         This part handles the cases when VisMa is NOT dealing with matrices.
@@ -154,7 +171,7 @@ def commandExec(command):
         elif operation == 'differentiate':
             lhs, rhs = getLHSandRHS(tokens)
             lTokens, _, _, equationTokens, comments = differentiate(lTokens, varName)
-        if operation != 'plot':
+        if operation != 'plot' and operation !='addgraph' and operation !='displaygraph':
             # FIXME: when either plotting window or GUI window is opened from CLI and after it is closed entire CLI exits, it would be better if it is avoided
             final_string = resultStringCLI(equationTokens, operation, comments, solutionType, simul)
             print(final_string)
