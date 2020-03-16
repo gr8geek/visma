@@ -1,8 +1,3 @@
-#from visma.discreteMaths.graphinput import dataParser
-#from graphstructure import CreateAdjency
-#from visma.discreteMaths.displaynetwork import displayNetworks
-#from graphinput import dataParser
-#from displaynetwork import displayNetworks
 
 from visma.discreteMaths.graph.graphinput import *
 from visma.discreteMaths.graph.displaynetwork import *
